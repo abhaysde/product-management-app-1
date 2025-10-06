@@ -1,0 +1,25 @@
+<div th:fragment="navbar" xmlns:th="http://www.thymeleaf.org">
+    <header id="fh5co-header-section" class="sticky-banner">
+        <div class="container">
+            <div class="nav-header">
+                <a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle dark"><i></i></a>
+                <h1 id="fh5co-logo">
+                    <a th:href="@{/}"><i class="icon-cart"></i>Product</a>
+                </h1>
+                <nav id="fh5co-menu-wrap" role="navigation">
+                    <ul class="sf-menu" id="fh5co-primary-menu">
+                        <li><a th:href="@{/home}">Home</a></li>
+                        <li><a th:href="@{/page/add-product}">Add Product</a></li>
+                        <li><a th:href="@{/page/products}">View All</a></li>	
+                        <li>
+                            <a th:href="${action} == 'Logout' ? @{/logout} : @{/page/login}"
+                               th:text="${action} == 'Logout' ? 'Logout' : 'Login'">
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+</div>

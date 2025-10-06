@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/header :: header}"></head>
+
+  <body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div id="fh5co-wrapper">
+      <div id="fh5co-page">
+        <!-- Login Form -->
+
+        <div
+          class="login-container"
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+          "
+        >
+          <h3>This is Home Page for temporary base.</h3>
+        </div>
+
+        <!-- Footer -->
+        <div th:replace="~{fragments/footer :: footer}"></div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/scripts :: scripts}"></div>
+  </body>
+</html>

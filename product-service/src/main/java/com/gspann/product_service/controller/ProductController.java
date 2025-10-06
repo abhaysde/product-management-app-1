@@ -17,22 +17,24 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping(value = "/product", consumes = {"multipart/form-data"})
+//    @PostMapping(value = "/product", consumes = {"multipart/form-data"})
+    @PostMapping("/product")
     public ResponseEntity<Product> createProduct(
             @RequestPart("product") Product product,
-            @RequestPart(value = "image", required = false) MultipartFile image) {
+            @RequestPart(value = "image") MultipartFile image) {
+//    	@RequestPart(value = "image", required = false) MultipartFile image) {
 
         Product savedProduct = productService.createProductWithImage(product, image);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
     }
 
 
-    @GetMapping
+    @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts(){
         return ResponseEntity.ok(productService.getAllProducts()) ;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id){
         try {
             Product product = productService.findProductById(id);
@@ -43,13 +45,13 @@ public class ProductController {
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/product/{id}")
     public ResponseEntity<Product> updateProductById(@PathVariable Long id, @RequestBody Product product){
         Product updated=productService.updateProduct(id,product);
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/product/{id}")
     public ResponseEntity<Product> deleteProductById(@PathVariable Long id){
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

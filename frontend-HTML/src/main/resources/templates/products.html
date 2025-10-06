@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body class="bg-light">
+	<div id="fh5co-wrapper">
+		<div id="fh5co-page">
+
+			<!-- Navbar -->
+			<div th:replace="fragments/navbar :: navbar"></div>
+
+			<!-- Page content -->
+			<div class="container py-5" style="max-width: 1000px;">
+
+				<!-- Search Bar -->
+				<div class="m-4" style="margin-top: 15px;">
+					<div class="input-group shadow-sm"  style="margin: 5px;">
+						<form action="/page/product/search" method="get">
+						<input type="text" id="searchInput" name="query" class="form-control rounded-start" placeholder="Search by product name">
+						<button type ="submit" class="btn btn-primary rounded-end px-4" style="margin: 5px;">
+							🔍 Search
+						</button></form>
+					</div>
+				</div>
+
+				<!-- Title -->
+				<h2 class="mb-4 text-center fw-bold text-primary">🛒 Product List</h2>
+
+				<!-- Product Table -->
+				<div class="table-responsive shadow-sm">
+					<table class="table table-striped table-hover table-bordered align-middle bg-white">
+						<thead class="table-dark text-center">
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Quantity</th>
+								<th>Price ($)</th>
+								<th>Discount (%)</th>
+								<th>Available</th>
+								<th>Deleted</th>
+								<th>Deleted Date</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody id="productTableBody">
+							<tr th:if="${#lists.isEmpty(products)}">
+								<td colspan="9" class="text-center text-muted">
+									No products available.
+								</td>
+							</tr>
+
+							<tr th:each="product : ${products}" class="text-center">
+								<td th:text="${product.id}">1</td>
+								<td th:text="${product.pName}">Sample Name</td>
+								<td th:text="${product.pQuantity}">10</td>
+								<td th:text="${#numbers.formatDecimal(product.pPrice, 1, 'COMMA', 2, 'POINT')}">100.00</td>
+								<td th:text="${product.pDiscount}">5.0</td>
+								<td>
+									<span th:text="${product.available} ? '✔️' : '❌'"></span>
+								</td>
+								<td>
+									<span th:text="${product.deleted} ? '✔️' : '❌'"></span>
+								</td>
+								<td th:text="${product.deletedDate != null ? product.deletedDate : '-'}">2023-01-01</td>
+								<td>
+									<!-- Action Buttons -->
+									<div th:if="${product.deletedDate == null}">
+										<a th:href="@{'/page/product/' + ${product.id}}" class="btn btn-sm btn-warning me-1" title="Edit">
+											✏️
+										</a>
+										<a th:href="@{'/page/delete/' + ${product.id}}" class="btn btn-sm btn-danger" title="Delete"
+										   onclick="return confirm('Are you sure you want to delete this product?');">
+											🗑️
+										</a>
+									</div>
+									<div th:if="${product.deletedDate != null}">
+										<button class="btn btn-sm btn-secondary me-1" disabled title="Cannot edit deleted product">✏️</button>
+										<button class="btn btn-sm btn-secondary" disabled title="Already deleted">🗑️</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- Add New Button -->
+				<div class="text-start mt-4">
+					<a href="/page/add-product" class="btn btn-success px-4 py-2 shadow-sm" style="margin: 15px;">
+						➕ Add New Product
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<div th:replace="fragments/footer :: footer"></div>
+
+	<!-- Scripts -->
+	<div th:replace="fragments/scripts :: scripts"></div>
+
+	
+</body>
+</html>

@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body>
+	<div id="fh5co-wrapper">
+		<div id="fh5co-page">
+
+			<!-- Navbar -->
+			<div th:replace="fragments/navbar :: navbar"></div>
+
+			<h1>Something went wrong</h1>
+			<p th:text="'Error: ' + ${errorMessage}"></p>
+
+			<!-- Footer -->
+			<div th:replace="fragments/footer :: footer"></div>
+		</div>
+	</div>
+
+	<!-- Scripts -->
+	<div th:replace="fragments/scripts :: scripts"></div>
+</body>
+</html>
