@@ -1,76 +1,127 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header"></head>
-<body>
-	<div id="fh5co-wrapper">
-		<div id="fh5co-page">
+  <head th:replace="fragments/header :: header"></head>
 
-			<!-- Navbar -->
-			<div th:replace="fragments/navbar :: navbar"></div>
-			
+  <body>
+    <div id="fh5co-wrapper">
+      <div id="fh5co-page">
+        <!-- Navbar -->
+        <div th:replace="fragments/navbar :: navbar"></div>
 
-			<!-- Page content -->
-			<div class="container mb-4" style="margin: 20px;">
-				<div class="container" style="width: 50%; height: auto;">
-					<h2 class="mb-4 text-center" th:text="${operation}">Add /
-						Update Product</h2>
+        <!-- Page content -->
+        <div class="container mb-4" style="margin: 20px">
+          <div class="container" style="width: 50%; height: auto">
+            <h2 class="mb-4 text-center" th:text="${operation}">
+              Add / Update Product
+            </h2>
 
-					<form th:action="@{/page/product/save}" th:object="${product}"
-						method="post" class="border p-4 rounded shadow-sm bg-light">
+            <form
+              th:action="@{/page/product/save}"
+              th:object="${product}"
+              method="post"
+              enctype="multipart/form-data"
+              class="border p-4 rounded shadow-sm bg-light"
+            >
+              <!-- Hidden ID -->
+              <input type="hidden" th:field="*{id}" />
 
-						<!-- Product Name -->
-						<div class="mb-3">
-							 <input type="hidden" th:field="*{id}">
-						</div>
-						<div class="mb-3">
-							<label for="pName" class="form-label">Product Name</label> <input
-								type="text" th:field="*{pName}" class="form-control" id="pName"
-								placeholder="Enter product name" required>
-						</div>
+              <!-- Product Name -->
+              <div class="mb-3">
+                <label for="pName" class="form-label">Product Name</label>
+                <input
+                  type="text"
+                  th:field="*{pName}"
+                  class="form-control"
+                  id="pName"
+                  placeholder="Enter product name"
+                  required
+                />
+              </div>
 
-						<!-- Quantity -->
-						<div class="mb-3">
-							<label for="pQuantity" class="form-label">Quantity</label> <input
-								type="number" th:field="*{pQuantity}" class="form-control"
-								id="pQuantity" placeholder="Enter quantity" min="0" required>
-						</div>
+              <!-- Quantity -->
+              <div class="mb-3">
+                <label for="pQuantity" class="form-label">Quantity</label>
+                <input
+                  type="number"
+                  th:field="*{pQuantity}"
+                  class="form-control"
+                  id="pQuantity"
+                  placeholder="Enter quantity"
+                  min="0"
+                  required
+                />
+              </div>
 
-						<!-- Price -->
-						<div class="mb-3">
-							<label for="pPrice" class="form-label">Price</label> <input
-								type="number" step="0.01" th:field="*{pPrice}"
-								class="form-control" id="pPrice" placeholder="Enter price"
-								min="0" required>
-						</div>
+              <!-- Price -->
+              <div class="mb-3">
+                <label for="pPrice" class="form-label">Price</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  th:field="*{pPrice}"
+                  class="form-control"
+                  id="pPrice"
+                  placeholder="Enter price"
+                  min="0"
+                  required
+                />
+              </div>
 
-						<!-- Discount -->
-						<div class="mb-3">
-							<label for="pDiscount" class="form-label">Discount (%)</label> <input
-								type="number" th:field="*{pDiscount}" class="form-control"
-								id="pDiscount" placeholder="Enter discount" min="0" max="100">
-						</div>
-						<div class="m-3">
-							<select class="form-select " th:field="*{available}" id="available"
-							required>
-							<option th:value="'true'" th:text="'Yes'"></option>
-							<option th:value="'false'" th:text="'No'"></option>
-						</select></div>
+              <!-- Discount -->
+              <div class="mb-3">
+                <label for="pDiscount" class="form-label">Discount (%)</label>
+                <input
+                  type="number"
+                  th:field="*{pDiscount}"
+                  class="form-control"
+                  id="pDiscount"
+                  placeholder="Enter discount"
+                  min="0"
+                  max="100"
+                />
+              </div>
 
-						<div class="text-center">
-							<button type="submit" class="btn btn-primary px-5">Submit</button>
-						</div>
+              <!-- Availability -->
+              <div class="mb-3">
+                <label for="available" class="form-label">Available</label>
+                <select
+                  class="form-select"
+                  th:field="*{available}"
+                  id="available"
+                  required
+                >
+                  <option th:value="true" th:text="'Yes'"></option>
+                  <option th:value="false" th:text="'No'"></option>
+                </select>
+              </div>
 
-					</form>
-				</div>
-			</div>
+              <!-- Photo Upload -->
+              <div class="mb-3">
+                <label for="photo" class="form-label">Upload Photo</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="photo"
+                  name="photo"
+                  accept="image/*"
+                />
+              </div>
 
-			<!-- Footer -->
-			<div th:replace="fragments/footer :: footer"></div>
-		</div>
-	</div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary px-5">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
 
-	<!-- Scripts -->
-	<div th:replace="fragments/scripts :: scripts"></div>
-</body>
+        <!-- Footer -->
+        <div th:replace="fragments/footer :: footer"></div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="fragments/scripts :: scripts"></div>
+  </body>
 </html>

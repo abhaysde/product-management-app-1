@@ -11,8 +11,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import model.Product;
 
@@ -27,18 +32,68 @@ public class ApiService {
 	/**
 	 * Creates a new product or updates an existing one based on its ID.
 	 */
-	public String saveAPI(Product product, String token) {
-		HttpEntity<Product> entity = buildEntityWithBody(product, token);
+//	public String saveAPI(Product product, String token, MultipartFile file) {
+//		HttpEntity<Product> entity = buildEntityWithBody(product, token);
+//
+//		if (product.getId() == 0) {
+//			// Create new product
+//			restTemplate.postForEntity(BASE_URL + "/product", entity, Product.class);
+//		} else {
+//			// Update existing product
+//			restTemplate.exchange(BASE_URL + "/product/" + product.getId(), HttpMethod.PUT, entity, Void.class);
+//		}
+//		System.out.println("Data from client : " + product);
+//		System.out.println("Image from client : " + file);
+//
+//		return "redirect:/page/products";
+//	}
 
-		if (product.getId() == 0) {
-			// Create new product
-			restTemplate.postForEntity(BASE_URL + "/product", entity, Product.class);
-		} else {
-			// Update existing product
-			restTemplate.exchange(BASE_URL + "/product/" + product.getId(), HttpMethod.PUT, entity, Void.class);
-		}
+	public String saveAPI(Product product, String token, MultipartFile file) {
+	    try {
+	        // Convert Product object to JSON string
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        String productJson = objectMapper.writeValueAsString(product);
 
-		return "redirect:/page/products";
+	        // Headers for the overall request
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+	        headers.setBearerAuth(token); // Include Authorization header
+
+	        // Create the multipart body
+	        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+	        // JSON part (product)
+	        HttpHeaders jsonHeaders = new HttpHeaders();
+	        jsonHeaders.setContentType(MediaType.APPLICATION_JSON);
+	        HttpEntity<String> productPart = new HttpEntity<>(productJson, jsonHeaders);
+	        body.add("product", productPart);
+
+	        // File part (optional)
+	        if (file != null && !file.isEmpty()) {
+	            HttpHeaders fileHeaders = new HttpHeaders();
+	            fileHeaders.setContentType(MediaType.parseMediaType(file.getContentType()));
+
+	            
+	            body.add("image", file.getBytes());
+	        }
+
+	        // Final request
+	        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+	        // Make the POST request
+	        ResponseEntity<Product> response = restTemplate.postForEntity(
+	                BASE_URL + "/product", requestEntity, Product.class);
+
+	        System.out.println("Saved product: " + response.getBody());
+
+	        // ✅ Return something (like a redirect URL or status)
+	        return "redirect:/page/products";
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        // Optionally log the error or return error page
+	        return "error"; // Or handle better
+	    }
 	}
 
 	/**
@@ -56,21 +111,17 @@ public class ApiService {
 
 //    Retrieves the list of the all products using name
 	public List<Product> getSearchedProducts(String param, String token) {
-	    HttpEntity<Void> entity = buildEntity(token);
+		HttpEntity<Void> entity = buildEntity(token);
 
-	    // Append param as query parameter ?query=value
-	    String url = BASE_URL + "/products/search?query=" + UriUtils.encode(param, StandardCharsets.UTF_8);
+		// Append param as query parameter ?query=value
+		String url = BASE_URL + "/products/search?query=" + UriUtils.encode(param, StandardCharsets.UTF_8);
 
-	    ResponseEntity<List<Product>> response = restTemplate.exchange(
-	        url,
-	        HttpMethod.GET,
-	        entity,
-	        new ParameterizedTypeReference<>() {}
-	    );
+		ResponseEntity<List<Product>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+				new ParameterizedTypeReference<>() {
+				});
 
-	    return response.getBody();
+		return response.getBody();
 	}
-
 
 	/**
 	 * Retrieves a product by its ID.

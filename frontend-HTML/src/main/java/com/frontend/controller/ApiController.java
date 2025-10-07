@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.frontend.services.ApiService;
 
@@ -30,6 +31,7 @@ public class ApiController {
 	/**
 	 * Show the Add Product form
 	 */
+
 	@GetMapping("/add-product")
 	public String showAddProductForm(Model model) {
 		model.addAttribute("product", new Product());
@@ -40,10 +42,20 @@ public class ApiController {
 	/**
 	 * Save or update a product
 	 */
+	@PostMapping("/page/product/save")
+	public String saveProduct() {
+
+		return "";
+	}
+
 	@PostMapping("/product/save")
-	public String saveOrUpdateProduct(@ModelAttribute Product product, HttpServletRequest request) {
+	public String saveOrUpdateProduct(@ModelAttribute Product product, @RequestParam("photo") MultipartFile image,
+			HttpServletRequest request) {
 		String token = extractTokenFromCookies(request);
-		return apiService.saveAPI(product, token);
+
+		this.apiService.saveAPI(product, token, image);
+
+		return "redirect:/product/list";
 	}
 
 	/**

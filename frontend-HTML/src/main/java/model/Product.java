@@ -11,4 +11,5 @@ public class Product {
 	private Boolean available;
 	private Boolean deleted;
 	private String deletedDate;
+	private String imageUrl;
 }

@@ -15,6 +15,10 @@ import com.gspann.auth_service.jwt.JwtUtil;
 import com.gspann.auth_service.model.User;
 import com.gspann.auth_service.repositories.UserRepository;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -50,4 +54,16 @@ public class AuthController {
 		String token = jwtUtil.generateToken(user.getUsername());
 	    return ResponseEntity.ok(new AuthResponse(token));
     }
+	
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+	    Cookie cookie = new Cookie("token", null);
+	    cookie.setHttpOnly(true);
+	    cookie.setSecure(true);
+	    cookie.setPath("/");
+	    cookie.setMaxAge(0); // Expire immediately
+	    response.addCookie(cookie);
+	    return ResponseEntity.ok("Logged out successfully");
+	}
+
 }
