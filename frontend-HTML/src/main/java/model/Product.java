@@ -1,15 +1,18 @@
 package model;
 
+import java.time.LocalDateTime;
+
 import lombok.Data;
 @Data
 public class Product {
-	private int id;
+	private Long id;
+
+	private String imageUrl;	
 	private String pName;
-	private int pQuantity;
-	private double pPrice;
-	private double pDiscount;
+	private Integer pQuantity;
+	private Double pPrice;
+	private Double pDiscount;
 	private Boolean available;
-	private Boolean deleted;
-	private String deletedDate;
-	private String imageUrl;
+	private Boolean deleted = false;
+	private LocalDateTime deletedDate;
 }

@@ -8,29 +8,31 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="products")
+@Table(name = "products")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(nullable = false,unique = true)
-    private String name;
-
-    @Column(nullable = false)
-    private Integer quantity;
-    @Column(nullable = false)
-    private Double price;
-    private Double discountPrice;
-    private Boolean isAvailable;
-    private Boolean isDeleted = false;
-
-    private LocalDateTime deletedDate;
-
-    private String imageUrl;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String imageUrl;
+	@Column(nullable = false, unique = true)
+	private String pName;
+	@Column(nullable = false)
+	private Integer pQuantity;
+	@Column(nullable = false)
+	private Double pPrice;
+	private Double pDiscount;
+	private Boolean available;
+	private Boolean deleted = false;
+	private LocalDateTime deletedDate;
 
 }

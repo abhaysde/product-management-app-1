@@ -50,12 +50,12 @@ public class ApiController {
 
 	@PostMapping("/product/save")
 	public String saveOrUpdateProduct(@ModelAttribute Product product, @RequestParam("photo") MultipartFile image,
-			HttpServletRequest request) {
+			HttpServletRequest request) throws Exception {
 		String token = extractTokenFromCookies(request);
 
 		this.apiService.saveAPI(product, token, image);
 
-		return "redirect:/product/list";
+		return "redirect:/page/products";
 	}
 
 	/**

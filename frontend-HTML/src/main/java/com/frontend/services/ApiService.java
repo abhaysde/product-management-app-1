@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,9 +33,9 @@ public class ApiService {
 	/**
 	 * Creates a new product or updates an existing one based on its ID.
 	 */
-//	public String saveAPI(Product product, String token, MultipartFile file) {
-//		HttpEntity<Product> entity = buildEntityWithBody(product, token);
-//
+	public void saveAPI(Product product, String token, MultipartFile image) throws Exception{
+		HttpEntity<Product> entity = buildEntityWithBody(product, token);
+		
 //		if (product.getId() == 0) {
 //			// Create new product
 //			restTemplate.postForEntity(BASE_URL + "/product", entity, Product.class);
@@ -46,54 +47,45 @@ public class ApiService {
 //		System.out.println("Image from client : " + file);
 //
 //		return "redirect:/page/products";
-//	}
-
-	public String saveAPI(Product product, String token, MultipartFile file) {
-	    try {
-	        // Convert Product object to JSON string
-	        ObjectMapper objectMapper = new ObjectMapper();
-	        String productJson = objectMapper.writeValueAsString(product);
-
-	        // Headers for the overall request
-	        HttpHeaders headers = new HttpHeaders();
+//		
+		
+		  HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-	        headers.setBearerAuth(token); // Include Authorization header
 
-	        // Create the multipart body
-	        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-
-	        // JSON part (product)
+	        // Create JSON part for the product
 	        HttpHeaders jsonHeaders = new HttpHeaders();
 	        jsonHeaders.setContentType(MediaType.APPLICATION_JSON);
-	        HttpEntity<String> productPart = new HttpEntity<>(productJson, jsonHeaders);
-	        body.add("product", productPart);
+	        HttpEntity<String> jsonPart = new HttpEntity<>(
+	                new ObjectMapper().writeValueAsString(product), jsonHeaders);
 
-	        // File part (optional)
-	        if (file != null && !file.isEmpty()) {
+	        // Create file part
+	        HttpEntity<byte[]> filePart = null;
+	        if (image != null && !image.isEmpty()) {
 	            HttpHeaders fileHeaders = new HttpHeaders();
-	            fileHeaders.setContentType(MediaType.parseMediaType(file.getContentType()));
-
-	            
-	            body.add("image", file.getBytes());
+	            fileHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+	            filePart = new HttpEntity<>(image.getBytes(), fileHeaders);
 	        }
 
-	        // Final request
+	        // Assemble multipart request
+	        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+	        body.add("product", jsonPart);
+	        if (filePart != null) {
+	            body.add("image", new ByteArrayResource(image.getBytes()) {
+	                @Override
+	                public String getFilename() {
+	                    return image.getOriginalFilename();
+	                }
+	            });
+	        }
+
 	        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-	        // Make the POST request
-	        ResponseEntity<Product> response = restTemplate.postForEntity(
-	                BASE_URL + "/product", requestEntity, Product.class);
-
-	        System.out.println("Saved product: " + response.getBody());
-
-	        // ✅ Return something (like a redirect URL or status)
-	        return "redirect:/page/products";
-
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        // Optionally log the error or return error page
-	        return "error"; // Or handle better
-	    }
+	        ResponseEntity<Product> response = restTemplate.exchange(
+	                BASE_URL + "/product",
+	                HttpMethod.POST,
+	                requestEntity,
+	                Product.class
+	        );
 	}
 
 	/**
