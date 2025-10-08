@@ -1,14 +1,24 @@
 package com.gspann.product_service.controller;
 
-import com.gspann.product_service.entity.Product;
-import com.gspann.product_service.service.ProductService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import com.gspann.product_service.entity.Product;
+import com.gspann.product_service.service.ProductService;
 
 @RestController
 @RequestMapping("/api")
@@ -54,4 +64,11 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+    
+
+	@GetMapping("/products/search")
+	public ResponseEntity<List<Product>> handleSearch(@RequestParam("query") String query) {
+	    List<Product> searchProducts = productService.getAllProductsByName(query);
+	    return ResponseEntity.ok(searchProducts);
+	}
 }

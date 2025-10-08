@@ -14,12 +14,11 @@ import com.gspann.product_service.service.ProductService;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-   @Autowired
+	@Autowired
 	private ProductRepository productRepository;
 	@Autowired
 	private S3Service s3Service;
 
-   
 	@Override
 	public Product createProductWithImage(Product product, MultipartFile image) {
 		try {
@@ -27,21 +26,21 @@ public class ProductServiceImpl implements ProductService {
 				String imageUrl = s3Service.uploadFile(image);
 				product.setImageUrl(imageUrl);
 			}
-			
+
 			Product byPName = productRepository.findBypName(product.getPName());
-			
-			if (byPName==null) {	
-				return productRepository.save(product);	
-			}
-			else {
-			
+
+			if (byPName == null) {
+				return productRepository.save(product);
+			} else {
+				byPName.setPPrice(product.getPPrice());
+				byPName.setPDiscount(product.getPDiscount());
 				byPName.setAvailable(true);
 				byPName.setDeleted(false);
 				byPName.setDeletedDate(null);
 				return productRepository.save(byPName);
-				
+
 			}
-			
+
 		} catch (Exception e) {
 			throw new RuntimeException("Error uploading product image: " + e.getMessage());
 		}
@@ -74,5 +73,10 @@ public class ProductServiceImpl implements ProductService {
 		old.setAvailable(false);
 
 		productRepository.save(old); // update instead of delete
+	}
+	
+	@Override
+	public List<Product> getAllProductsByName(String query) {
+		return productRepository.findBypNameContainingIgnoreCase(query);
 	}
 }

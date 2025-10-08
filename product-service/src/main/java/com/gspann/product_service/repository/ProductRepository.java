@@ -8,5 +8,7 @@ import com.gspann.product_service.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
     List<Product> findByDeletedFalse();
-   Product findBypName(String pName);
+   Product findBypName(String pName); 
+   List<Product> findBypNameContainingIgnoreCase(String pName);
+
 }
