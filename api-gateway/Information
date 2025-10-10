@@ -1,0 +1,14 @@
+                   [ Client / Frontend ] (PORT 5173)
+                             |
+                             v
+                      [ API Gateway ] (PORT 8080) 
+                             |
+        -----------------------------------------
+        |                                       |
+        v                                       v
+ [ Auth Service ] PORT(8083)              [ Product Service ] PORT(8082)
+        |                                       |
+   - /login                                 - Create Product
+   - /logout                                - Read Products
+   - /signup                                - Update Product
+                                           - Delete Product

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,15 +56,14 @@ public class AuthController {
 	    return ResponseEntity.ok(new AuthResponse(token));
     }
 	
-	@PostMapping("/logout")
-	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-	    Cookie cookie = new Cookie("token", null);
-	    cookie.setHttpOnly(true);
-	    cookie.setSecure(true);
-	    cookie.setPath("/");
-	    cookie.setMaxAge(0); // Expire immediately
-	    response.addCookie(cookie);
-	    return ResponseEntity.ok("Logged out successfully");
-	}
-
+	  @GetMapping("/logout")
+	    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+	        Cookie cookie = new Cookie("token", null);
+	        cookie.setHttpOnly(true);
+	        cookie.setSecure(true);
+	        cookie.setPath("/");
+	        cookie.setMaxAge(0);
+	        response.addCookie(cookie);
+	        return ResponseEntity.ok("Logged out successfully");
+	    }
 }

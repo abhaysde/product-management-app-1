@@ -25,14 +25,13 @@ public class Product {
 	private Long id;
 	private String imageUrl;
 	@Column(nullable = false, unique = true)
-	private String pName;
+	private String name;
 	@Column(nullable = false)
-	private Integer pQuantity;
+	private int quantity;
 	@Column(nullable = false)
-	private Double pPrice;
-	private Double pDiscount;
-	private Boolean available;
+	private double price;
+	private Double discountPrice;
+	private boolean isAvailable;
 	private Boolean deleted = false;
 	private LocalDateTime deletedDate;
-
 }

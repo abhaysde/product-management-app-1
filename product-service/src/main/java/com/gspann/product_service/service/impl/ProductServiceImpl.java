@@ -27,13 +27,13 @@ public class ProductServiceImpl implements ProductService {
 				product.setImageUrl(imageUrl);
 			}
 
-			Product byPName = productRepository.findBypName(product.getPName());
+			Product byPName = productRepository.findByname(product.getName());
 
 			if (byPName == null) {
 				return productRepository.save(product);
 			} else {
-				byPName.setPPrice(product.getPPrice());
-				byPName.setPDiscount(product.getPDiscount());
+				byPName.setPrice(product.getPrice());
+				byPName.setDiscountPrice(product.getDiscountPrice());
 				byPName.setAvailable(true);
 				byPName.setDeleted(false);
 				byPName.setDeletedDate(null);
@@ -59,6 +59,10 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product updateProduct(Long id, Product product) {
+
+		if (product.getImageUrl() == null) {
+			product.setImageUrl(this.productRepository.findById(id).get().getImageUrl());
+		}
 		product.setId(id);
 		return productRepository.save(product);
 	}
@@ -74,9 +78,9 @@ public class ProductServiceImpl implements ProductService {
 
 		productRepository.save(old); // update instead of delete
 	}
-	
+
 	@Override
 	public List<Product> getAllProductsByName(String query) {
-		return productRepository.findBypNameContainingIgnoreCase(query);
+		return productRepository.findBynameContainingIgnoreCase(query);
 	}
 }
