@@ -1,0 +1,32 @@
+.user-avatar {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000;
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.user-name {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}

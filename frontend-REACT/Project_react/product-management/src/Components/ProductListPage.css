@@ -1,0 +1,434 @@
+/* ProductListPage.css */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #121212;
+  color: #eee;
+}
+
+.product-list-container {
+  max-width: 1200px;
+  margin: 20px auto 60px auto;
+  padding: 0 20px 40px 20px;
+}
+
+h2 {
+  position: fixed;         /* Fix it so it stays below navbar */
+  top: 60px;              /* Adjust this to navbar height */
+  left: 0;
+  width: 100%;            /* Full width */
+  margin: 0;              /* Remove default margin */
+  padding: 10px 20px;     /* Add some padding */
+  font-weight: 900;
+  color: #ffcc00;
+  text-align: left;       /* "top" is invalid for text-align, use left */
+  z-index: -1;           /* Above other content but below navbar */
+  box-sizing: border-box; /* Include padding in width */
+}
+.product-list-container {
+  padding-top: 110px; /* navbar height (60px) + h2 height (~50px) */
+}
+
+
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #222; /* same as your nav background */
+  z-index: 1000;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* Optional: add a shadow for distinction */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+
+
+.nav-left {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  background-color: #333;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  color: #eee;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.nav-btn:hover {
+  background-color: #ffcc00;
+  color: #121212;
+}
+
+.logout-btn {
+  background-color: #b00020;
+}
+
+.logout-btn:hover {
+  background-color: #ff4444;
+  color: white;
+}
+
+.search-container {
+  position: relative;
+  flex-grow: 1;
+  max-width: 300px;
+}
+
+
+.search-input {
+  width: 100%;
+  padding: 8px 35px 8px 10px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #222;
+  color: #eee;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: #ffcc00;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  pointer-events: none;
+}
+
+.search-btn {
+  display: none; /* Hidden because enter key is used for search */
+}
+
+.create-product-form-wrapper {
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  box-shadow: 0 0 12px rgba(255, 204, 0, 0.3);
+}
+
+.create-product-form h3 {
+  margin-top: 0;
+  margin-bottom: 35px;
+  color: #ffcc00;
+  font-weight: 900;
+  font-size: 28px;          /* Increased size */
+  text-align: center;       /* Center the heading */
+}
+
+.create-product-form form > div {
+  margin-bottom: 15px;
+}
+
+.create-product-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #eee;
+}
+
+.create-product-form input[type="text"],
+.create-product-form input[type="number"],
+.create-product-form input[type="file"] {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #222;
+  color: #eee;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.no-products-message {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 200;       /* Increased for better visibility at large size */
+  color: white;
+  margin-top: 20px;
+}
+
+
+.create-product-form input[type="text"]:focus,
+.create-product-form input[type="number"]:focus,
+.create-product-form input[type="file"]:focus {
+  border-color: #ffcc00;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  color: #eee;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.create-product-form button[type="submit"] {
+  background-color: #ffcc00;
+  border: none;
+  color: #121212;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  font-size: 16px;
+}
+
+.create-product-form button[type="submit"]:hover {
+  background-color: #e6b800;
+}
+
+.product-list-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(370px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(255, 204, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-card.deleted {
+  opacity: 0.6;
+  filter: grayscale(100%);
+  pointer-events: none;
+}
+
+.product-image,
+.product-image-placeholder {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background-color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.product-details {
+  padding: 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffcc00;
+  user-select: none;
+}
+
+.product-price,
+.discount,
+p {
+  margin: 4px 0;
+  font-size: 14px;
+  user-select: none;
+}
+
+.discount {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.status {
+  margin-top: auto;
+  font-weight: 700;
+  user-select: none;
+}
+
+.status.in-stock {
+  color: #4caf50;
+}
+
+.status.out-of-stock {
+  color: #e53935;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.edit-btn,
+.delete-btn,
+.save-btn,
+.cancel-btn {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.edit-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #1976d2;
+}
+
+.delete-btn {
+  background-color: #b00020;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #ff4444;
+}
+
+.save-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #388e3c;
+}
+
+.cancel-btn {
+  background-color: #757575;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #616161;
+}
+
+/* Edit form inside product card */
+
+.edit-form {
+  padding: 15px;
+  background-color: #222;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  user-select: none;
+}
+
+.edit-form label {
+  display: inline-block;
+  width: 130px;    /* fixed width to align labels */
+  margin-right: 15px;  /* gap between label and input */
+  vertical-align: middle;
+  font-weight: 600;
+}
+
+.edit-form input,
+.edit-form select,
+.edit-form textarea {
+  display: inline-block;
+  vertical-align: middle;
+  width: calc(100% - 150px); /* Adjust width to fit beside label */
+  max-width: 300px; /* optional max width */
+  padding: 6px 8px;
+  box-sizing: border-box;
+  margin-bottom: 20px; /* vertical spacing between rows */
+}
+
+.edit-form input[type="text"],
+.edit-form input[type="number"] {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #121212;
+  color: #eee;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.edit-form input[type="text"]:focus,
+.edit-form input[type="number"]:focus {
+  border-color: #ffcc00;
+}
+
+.edit-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Responsive tweaks */
+
+@media (max-width: 768px) {
+  .nav-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-left {
+    justify-content: center;
+  }
+
+  .search-container {
+    max-width: 100%;
+  }
+
+  .product-list-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 400px) {
+  .nav-btn {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+}
