@@ -1,0 +1,257 @@
+✅ auth-service – issues JWT tokens
+
+✅ api-gateway – routes requests and validates tokens
+
+✅ product-service – performs CRUD operations
+
+You want:
+
+🔐 All requests to product-service must have a valid JWT token.
+
+✅ Token should be validated at API Gateway.
+
+🚫 Requests directly to product-service via Postman (bypassing the gateway) must not be allowed without a valid token.
+
+✅ Best Practice Architecture for Your Case
+
+Here’s the best-practice way to set this up:
+
++--------+       +-------------+         +------------------+
+| Client | --->  | API Gateway | ----->  | product-service  |
+|        |       | (JWT Check) |         | (Secured)        |
++--------+       +-------------+         +------------------+
+        |             |
+        |             +--->  /login (via auth-service)
+        v
+   [ auth-service ]
+
+🔐 Token Validation Strategy (Best Approach)
+✅ 1. Token validation in API Gateway using a Global Filter.
+
+Intercepts all requests.
+
+Verifies JWT token (signature, expiry, etc.).
+
+Rejects unauthorized requests with HTTP 401.
+
+Adds user info (e.g. user ID, roles) to headers.
+
+✅ 2. Security enforcement in product-service, even if accessed directly.
+
+Add Spring Security to product-service.
+
+It should:
+
+Require Authorization: Bearer <token> header.
+
+Validate token.
+
+Reject unauthorized requests.
+
+🔒 This way, even if someone tries to hit product-service directly (e.g. via Postman), they’ll still need a valid token.
+
+💡 Overall Flow
+
+✅ User logs in → auth-service issues a JWT.
+
+✅ Client sends request to api-gateway with JWT.
+
+✅ API Gateway:
+
+Validates the token.
+
+If valid, routes to product-service.
+
+Adds user details as headers (optional).
+
+✅ product-service:
+
+Also validates the token.
+
+Proceeds with business logic if valid.
+
+Returns 401/403 if token is invalid/missing.
+
+🛠️ Implementation Steps
+1. 🔧 auth-service – Issue JWT Token
+
+Use spring-boot-starter-security and JWT library (e.g. jjwt).
+
+Example Token Issuing Endpoint:
+
+@PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    // Validate user credentials
+    // On success, generate JWT
+    String token = Jwts.builder()
+        .setSubject(user.getUsername())
+        .setIssuedAt(new Date())
+        .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
+        .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+        .compact();
+
+    return ResponseEntity.ok(new AuthResponse(token));
+}
+
+2. 🔧 api-gateway – Global JWT Filter
+
+Dependencies:
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-gateway</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+</dependency>
+
+
+Filter Code:
+
+@Component
+public class JwtAuthFilter implements GlobalFilter, Ordered {
+
+    private final String SECRET_KEY = "your-secret-key";
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        ServerHttpRequest request = exchange.getRequest();
+
+        if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+            return this.onError(exchange, "Missing Authorization header", HttpStatus.UNAUTHORIZED);
+        }
+
+        String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (!authHeader.startsWith("Bearer ")) {
+            return this.onError(exchange, "Invalid Authorization header", HttpStatus.UNAUTHORIZED);
+        }
+
+        String token = authHeader.substring(7);
+
+        try {
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            // Optionally add claims to headers
+        } catch (Exception e) {
+            return this.onError(exchange, "Invalid JWT token", HttpStatus.UNAUTHORIZED);
+        }
+
+        return chain.filter(exchange);
+    }
+
+    private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(httpStatus);
+        return response.setComplete();
+    }
+
+    @Override
+    public int getOrder() {
+        return -1;
+    }
+}
+
+3. 🔒 product-service – Add Security
+
+Even if token is already validated in gateway, your microservice must also validate it, to prevent direct access.
+
+Dependencies:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+</dependency>
+
+
+Security Config:
+
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final String SECRET_KEY = "your-secret-key";
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .authorizeRequests()
+            .anyRequest().authenticated()
+            .and()
+            .addFilterBefore(new JwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    class JwtRequestFilter extends OncePerRequestFilter {
+
+        @Override
+        protected void doFilterInternal(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        FilterChain chain)
+                                        throws ServletException, IOException {
+
+            final String authHeader = request.getHeader("Authorization");
+
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing token");
+                return;
+            }
+
+            final String token = authHeader.substring(7);
+
+            try {
+                Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+                // Optionally set Spring Security context
+            } catch (JwtException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                return;
+            }
+
+            chain.doFilter(request, response);
+        }
+    }
+}
+
+4. 🚫 Prevent Unauthorized Direct Access to Product Service
+
+The Spring Security config above does this.
+
+Even if someone uses Postman to call http://localhost:8082/products, the product-service will require a valid JWT.
+
+If token is invalid or missing, it returns 401 Unauthorized.
+
+🧪 Test Flow (Example)
+✅ 1. Login
+POST http://localhost:8081/auth/login
+Body: { "username": "admin", "password": "pass" }
+
+
+Response:
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR..."
+}
+
+✅ 2. Call API Gateway with token
+GET http://localhost:8080/product-service/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR...
+
+
+➡️ Gateway validates token → Forwards request → Product-service validates again → Returns data.
+
+📌 Summary
+Step	Validation	Purpose
+🔐 API Gateway	JWT validation	Central auth enforcement
+🧱 Product Service	JWT validation	Secures direct access (e.g. Postman)
+🔑 Auth Service	Token generation	Issues JWT
+📁 Optional: Folder Structure
+/auth-service
+    /controller
+    /security
+    /service
+/product-service
+    /controller
+    /security
+/api-gateway
+    /filter
