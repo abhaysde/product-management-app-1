@@ -32,6 +32,7 @@ public class Product {
 	private double price;
 	private Double discountPrice;
 	private boolean isAvailable;
-	private Boolean deleted = false;
+	private boolean deleted = false;
 	private LocalDateTime deletedDate;
+	private String description;
 }
