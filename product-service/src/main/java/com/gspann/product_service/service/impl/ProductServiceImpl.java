@@ -27,13 +27,13 @@ public class ProductServiceImpl implements ProductService {
 				product.setImageUrl(imageUrl);
 			}
 
-			Product byPName = productRepository.findByname(product.getName());
+			Product byPName = productRepository.findBypName(product.getPName());
 
 			if (byPName == null) {
 				return productRepository.save(product);
 			} else {
-				byPName.setPrice(product.getPrice());
-				byPName.setDiscountPrice(product.getDiscountPrice());
+				byPName.setPPrice(product.getPPrice());
+				byPName.setPDiscount(product.getPDiscount());
 				byPName.setAvailable(true);
 				byPName.setDeleted(false);
 				byPName.setDeletedDate(null);
@@ -81,6 +81,6 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<Product> getAllProductsByName(String query) {
-		return productRepository.findBynameContainingIgnoreCase(query);
+		return productRepository.findBypNameContainingIgnoreCase(query);
 	}
 }

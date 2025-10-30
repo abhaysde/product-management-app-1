@@ -24,14 +24,18 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String imageUrl;
+
 	@Column(nullable = false, unique = true)
-	private String name;
+	private String pName;
+
 	@Column(nullable = false)
-	private int quantity;
+	private int pQuantity;
+
 	@Column(nullable = false)
-	private double price;
-	private Double discountPrice;
-	private boolean isAvailable;
+	private double pPrice;
+
+	private Double pDiscount;
+	private boolean available;
 	private boolean deleted = false;
 	private LocalDateTime deletedDate;
 	private String description;

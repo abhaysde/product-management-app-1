@@ -54,7 +54,6 @@ public class ApiController {
 		String token = extractTokenFromCookies(request);
 
 		this.apiService.saveAPI(product, token, image);
-
 		return "redirect:/page/products";
 	}
 
@@ -77,6 +76,9 @@ public class ApiController {
 	public String listAllProducts(Model model, HttpServletRequest request) {
 		String token = extractTokenFromCookies(request);
 		List<Product> products = apiService.getAllProducts(token);
+		
+		System.out.println("ApiController.listAllProducts() "+ products);
+		
 		model.addAttribute("products", products);
 		model.addAttribute("operation", "List Products");
 		return "products";

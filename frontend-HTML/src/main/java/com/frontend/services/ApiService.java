@@ -34,22 +34,7 @@ public class ApiService {
 	 * Creates a new product or updates an existing one based on its ID.
 	 */
 	public void saveAPI(Product product, String token, MultipartFile image) throws Exception{
-		HttpEntity<Product> entity = buildEntityWithBody(product, token);
-		
-//		if (product.getId() == 0) {
-//			// Create new product
-//			restTemplate.postForEntity(BASE_URL + "/product", entity, Product.class);
-//		} else {
-//			// Update existing product
-//			restTemplate.exchange(BASE_URL + "/product/" + product.getId(), HttpMethod.PUT, entity, Void.class);
-//		}
-//		System.out.println("Data from client : " + product);
-//		System.out.println("Image from client : " + file);
-//
-//		return "redirect:/page/products";
-//		
-		
-		  HttpHeaders headers = new HttpHeaders();
+			  HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
 	        // Create JSON part for the product
@@ -80,7 +65,7 @@ public class ApiService {
 
 	        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-	        ResponseEntity<Product> response = restTemplate.exchange(
+	        restTemplate.exchange(
 	                BASE_URL + "/product",
 	                HttpMethod.POST,
 	                requestEntity,
@@ -144,13 +129,6 @@ public class ApiService {
 		headers.setBearerAuth(token);
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		return headers;
-	}
-
-	/**
-	 * Builds an HttpEntity with a request body and authorization headers.
-	 */
-	private <T> HttpEntity<T> buildEntityWithBody(T body, String token) {
-		return new HttpEntity<>(body, createAuthHeaders(token));
 	}
 
 	/**

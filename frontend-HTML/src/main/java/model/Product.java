@@ -3,11 +3,11 @@ package model;
 import java.time.LocalDateTime;
 
 import lombok.Data;
+
 @Data
 public class Product {
 	private Long id;
-
-	private String imageUrl;	
+	private String imageUrl;
 	private String pName;
 	private Integer pQuantity;
 	private Double pPrice;
